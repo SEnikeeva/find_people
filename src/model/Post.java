@@ -1,6 +1,11 @@
 package model;
 
+import service.PostService;
+
+import java.io.IOException;
 import java.sql.Date;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Post {
@@ -11,6 +16,11 @@ public class Post {
     private Date date;
     private Comment comment;
     private Chat chat;
+    private List<User> gamers;
+
+    public List<User> getGamers() throws SQLException, IOException, ClassNotFoundException {
+        return new PostService().getGamers(this);
+    }
 
     public Integer getId() {
         return id;
