@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Post {
@@ -16,7 +17,7 @@ public class Post {
     private Date date;
     private Comment comment;
     private Chat chat;
-    private List<User> gamers;
+    private HashSet<User> gamers;
 
     public void setId(Integer id) {
         this.id = id;
@@ -46,11 +47,7 @@ public class Post {
         this.chat = chat;
     }
 
-    public void setGamers(List<User> gamers) {
-        this.gamers = gamers;
-    }
-
-    public List<User> getGamers() throws SQLException, IOException, ClassNotFoundException {
+    public HashSet<User> getGamers() throws SQLException, IOException, ClassNotFoundException {
         return new PostService().getGamers(this);
     }
 
