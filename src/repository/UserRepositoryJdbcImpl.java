@@ -69,7 +69,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     public User validateUser(String username, String password) throws SQLException, IOException, ClassNotFoundException {
         connection = new DbConnection().getConnection();
         PreparedStatement statement = connection.prepareStatement( "SELECT *  FROM" +
-                "users WHERE username = ? AND  password = ?");
+                " users WHERE username = ? AND  password = ?");
         statement.setString(1, username);
         statement.setString(2, password);
         ResultSet rs = statement.executeQuery();
@@ -78,7 +78,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
                     rs.getInt("id"),
                     rs.getString("username"),
                     rs.getString("password"),
-                    rs.getString("profile_pic"));
+                    rs.getString("profile_picture"));
         }
 
         return null;

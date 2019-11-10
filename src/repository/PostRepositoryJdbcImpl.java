@@ -1,6 +1,7 @@
 package repository;
 
 import helper.DbConnection;
+import model.Chat;
 import model.Game;
 import model.Post;
 import model.User;
@@ -15,9 +16,10 @@ public class PostRepositoryJdbcImpl implements CrudRepository<Post> {
     public void save(Post model) throws SQLException, IOException, ClassNotFoundException {
         Connection connection = new DbConnection().getConnection();
         PreparedStatement st = null;
+        int chatId= new ChatRepositoryJdbcImpl().save(new Chat(0));;
         try {
             st = connection.prepareStatement(
-                    "INSERT INTO post(game, author, requiredplayers, date, comments, chat) VALUES (?, ?, ?)");
+                    "INSERT INTO post(game, author, requiredplayers, date, chat) VALUES (?, ?, ?, ?, ?)");
         } catch (SQLException e) {
             throw new IllegalArgumentException(e);
         }
@@ -27,8 +29,7 @@ public class PostRepositoryJdbcImpl implements CrudRepository<Post> {
             st.setInt(++i, model.getAuthor().getId());
             st.setInt(++i, model.getRequiredPlayers());
             st.setDate(++i, model.getDate());
-            st.setInt(++i, model.getComment().getId());
-            st.setInt(++i, model.getChat().getId());
+            st.setInt(++i, chatId);
             st.executeUpdate();
             st.close();
         } catch (SQLException e) {
@@ -45,6 +46,14 @@ public class PostRepositoryJdbcImpl implements CrudRepository<Post> {
         return null;
     }
 
+    public List<Post> findByAuthor(User author) throws SQLException, IOException, ClassNotFoundException {
+        List<Post> posts = new ArrayList<>();
+        for (Post post : findAll()) {
+            if (post.getAuthor().equals(author))
+                posts.add(post);
+        }
+        return posts;
+    }
     @Override
     public void delete(Post model) {
 

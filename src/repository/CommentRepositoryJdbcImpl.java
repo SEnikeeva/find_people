@@ -9,36 +9,39 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommentRepositoryJdbcImpl implements CrudRepository<Comment> {
-    @Override
-    public void save(Comment model) throws SQLException, IOException, ClassNotFoundException {
+public class CommentRepositoryJdbcImpl {
+    //@Override
+    public int save(Comment model) throws SQLException, IOException, ClassNotFoundException {
         Connection connection = new DbConnection().getConnection();
+        int id = 0;
         try {
-            PreparedStatement st = connection.prepareStatement("INSERT INTO message(post, text, date, author) VALUES (?, ?, ?, ?)");
+            PreparedStatement st = connection.prepareStatement("INSERT INTO comment(text, date) VALUES (?, ?) returning id");
             int i = 1;
-            st.setInt(i, model.getPost().getId());
-            st.setString(++i, model.getText());
+            st.setString(i, "");
             st.setDate(++i, new Date(System.currentTimeMillis()));
-            st.setInt(++i, model.getAuthor().getId());
-            st.executeUpdate();
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+            rs.close();
             st.close();
         } catch (SQLException e) {
             throw new IllegalArgumentException(e);
         }
-
+        return id;
     }
 
-    @Override
+    //@Override
     public Comment findByID(int id) throws SQLException, IOException, ClassNotFoundException {
         return null;
     }
 
-    @Override
+    //@Override
     public void delete(Comment model) {
 
     }
 
-    @Override
+    //@Override
     public List<Comment> findAll() throws SQLException, IOException, ClassNotFoundException {
         Connection connection = new DbConnection().getConnection();
         List<Comment> comments = new ArrayList<>();
@@ -49,24 +52,18 @@ public class CommentRepositoryJdbcImpl implements CrudRepository<Comment> {
             resultSet = statement.executeQuery("SELECT * FROM comment");
             while (resultSet.next()) {
                 comments.add(new Comment(Integer.parseInt(resultSet.getString("id")),
-                        new PostRepositoryJdbcImpl().findByID(resultSet.getInt("post")),
                         resultSet.getString("text"),
-                        resultSet.getDate("date"),
-                        new UserRepositoryJdbcImpl().findByID(resultSet.getInt("author"))
+                        resultSet.getDate("date")
                        ));
             }
         } catch (SQLException e) {
             throw new IllegalArgumentException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
 
         return comments;
     }
 
-    @Override
+    //@Override
     public void update() {
 
     }
