@@ -7,6 +7,7 @@ import model.Post;
 import model.User;
 import repository.GameRepositoryJdbcImpl;
 import repository.PostRepositoryJdbcImpl;
+import service.PostService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -51,10 +52,11 @@ public class CreatePostServlet extends HttpServlet {
         filePart.write(fullpath);
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
         Date date = new Date(System.currentTimeMillis());
+        int post = 0;
         if (fileName.equals("")) {
             try {
                 int game = new GameRepositoryJdbcImpl().save(new Game(0, title,"", null));
-                new PostRepositoryJdbcImpl().save(new Post(
+                post = new PostRepositoryJdbcImpl().save(new Post(
                         0,
                         new GameRepositoryJdbcImpl().findByID(game),
                         user,
@@ -68,7 +70,7 @@ public class CreatePostServlet extends HttpServlet {
             String need_path = "/" + localdir + "/" + filename;
             try {
                 int game = new GameRepositoryJdbcImpl().save(new Game(0, title,"", need_path));
-                new PostRepositoryJdbcImpl().save(new Post(
+                post = new PostRepositoryJdbcImpl().save(new Post(
                         0,
                         new GameRepositoryJdbcImpl().findByID(game),
                         user,
@@ -76,6 +78,11 @@ public class CreatePostServlet extends HttpServlet {
                         date,
                         null, null));
             } catch (SQLException |ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                new PostService().addGamer(post, user.getId());
+            } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
             resp.sendRedirect("/profile");
