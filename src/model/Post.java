@@ -18,6 +18,38 @@ public class Post {
     private Chat chat;
     private List<User> gamers;
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public void setRequiredPlayers(Integer requiredPlayers) {
+        this.requiredPlayers = requiredPlayers;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
+
+    public void setGamers(List<User> gamers) {
+        this.gamers = gamers;
+    }
+
     public List<User> getGamers() throws SQLException, IOException, ClassNotFoundException {
         return new PostService().getGamers(this);
     }
