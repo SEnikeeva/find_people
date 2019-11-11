@@ -45,6 +45,6 @@ public class PostService {
         st.close();
         Post post1 = new PostRepositoryJdbcImpl().findByID(post);
         post1.setRequiredPlayers(post1.getRequiredPlayers()- 1);
-
+        new PostRepositoryJdbcImpl().update(post1);
     }
 }
