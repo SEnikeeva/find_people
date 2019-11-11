@@ -1,25 +1,31 @@
 package model;
 
+import service.ChatService;
+
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class Chat {
-    int id;
+    private int id;
+
 
     public Chat(int id) {
+        this.id = id;
     }
 
     public int getId() {
         return id;
     }
 
-    List<User> chatters;
-    List<Message> conversation;
+    private List<User> chatters;
+    private List<Message> conversation;
 
     public List<User> getChatters() {
         return chatters;
     }
 
-    public List<Message> getConversation() {
-        return conversation;
+    public List<Message> getConversation() throws SQLException, IOException, ClassNotFoundException {
+        return new ChatService().getConversation(this);
     }
 }

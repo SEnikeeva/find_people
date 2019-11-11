@@ -9,6 +9,22 @@ public class User {
     private String password;
     private String profilePicture;
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
     public User(){}
 
     public User(Integer id, String name, String password, String profilePicture) {

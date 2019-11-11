@@ -6,14 +6,13 @@ import java.sql.Date;
 public class Message {
 
     private Integer id;
-    private User sender, receiver;
+    private User sender;
     private String text;
     private Date date;
 
-    public Message(Integer id, User sender_id, User receiver_id, String text, Date timesent) {
+    public Message(Integer id, User sender_id, String text, Date timesent) {
         this.id = id;
         this.sender = sender_id;
-        this.receiver = receiver_id;
         this.text = text;
         this.date = timesent;
     }
@@ -26,9 +25,6 @@ public class Message {
         return sender;
     }
 
-    public User getReceiver() {
-        return receiver;
-    }
 
     public String getText() {
         return text;
@@ -42,7 +38,6 @@ public class Message {
     public String toString() {
         return "Message{" +
                 "sender=" + sender +
-                ", receiver=" + receiver +
                 ", text='" + text + '\'' +
                 ", date=" + date +
                 '}';
