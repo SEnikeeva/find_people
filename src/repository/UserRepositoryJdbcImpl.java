@@ -2,6 +2,7 @@ package repository;
 
 
 import helper.DbConnection;
+import helper.HashHelper;
 import model.User;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
         int i = 1;
         try {
             st.setString(i, model.getUsername());
-            st.setString(++i, model.getPassword());
+            st.setString(++i, HashHelper.getHash(model.getPassword()));
             st.setString(++i, model.getProfilePicture());
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
@@ -62,14 +63,14 @@ public class UserRepositoryJdbcImpl implements UserRepository {
         return null;
     }
 
+
     public User validateUser(String username, String password) throws SQLException, IOException, ClassNotFoundException {
         Connection connection = new DbConnection().getConnection();
-        PreparedStatement statement = connection.prepareStatement( "SELECT *  FROM" +
-                " users WHERE username = ? AND  password = ?");
-        statement.setString(1, username);
-        statement.setString(2, password);
-        ResultSet rs = statement.executeQuery();
-        if (rs.next()) {
+        PreparedStatement ps = connection.prepareStatement("select * from users where username = (?)");
+        int i = 1;
+        ps.setString(i, username);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next() && HashHelper.getHash(password).equals(rs.getString("password"))){
             return new User(
                     rs.getInt("id"),
                     rs.getString("username"),

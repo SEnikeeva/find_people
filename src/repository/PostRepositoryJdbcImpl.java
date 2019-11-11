@@ -88,6 +88,14 @@ public class PostRepositoryJdbcImpl implements CrudRepository<Post>{
         return posts;
     }
 
+    public Post findByGameName(String gameName) throws SQLException, IOException, ClassNotFoundException {
+        for (Post post : findAll()) {
+            if (post.getGame().getName().equals(gameName))
+                return post;
+        }
+        return null;
+    }
+
     @Override
     public void update(Post post) throws SQLException, IOException, ClassNotFoundException {
         Connection connection = new DbConnection().getConnection();
