@@ -9,11 +9,10 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebFilter(urlPatterns = {"/profile", "/login", "/registration", "/index"})
+@WebFilter(urlPatterns = {"/profile", "/login", "/registration", "/join", "/chat", "/createpost"})
 public class LoginFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
