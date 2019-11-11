@@ -5,6 +5,7 @@ import model.Chat;
 import model.Game;
 import model.Post;
 import model.User;
+import repository.ChatRepositoryJdbcImpl;
 import repository.GameRepositoryJdbcImpl;
 import repository.PostRepositoryJdbcImpl;
 import service.PostService;
@@ -53,16 +54,22 @@ public class CreatePostServlet extends HttpServlet {
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
         Date date = new Date(System.currentTimeMillis());
         int post = 0;
+        int chat_id = 0;
+        try {
+            chat_id = new ChatRepositoryJdbcImpl().save(new Chat(0));
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         if (fileName.equals("")) {
             try {
-                int game = new GameRepositoryJdbcImpl().save(new Game(0, title,"", null));
+                int game_id = new GameRepositoryJdbcImpl().save(new Game(0, title,"", null));
                 post = new PostRepositoryJdbcImpl().save(new Post(
                         0,
-                        new GameRepositoryJdbcImpl().findByID(game),
+                        new GameRepositoryJdbcImpl().findByID(game_id),
                         user,
                         requiredPlayers,
                         date,
-                        null, null));
+                        null, new ChatRepositoryJdbcImpl().findByID(chat_id)));
             } catch (SQLException | ClassNotFoundException e1) {
                 e1.printStackTrace();
             }
@@ -76,7 +83,7 @@ public class CreatePostServlet extends HttpServlet {
                         user,
                         requiredPlayers,
                         date,
-                        null, null));
+                        null, new ChatRepositoryJdbcImpl().findByID(chat_id)));
             } catch (SQLException |ClassNotFoundException e) {
                 e.printStackTrace();
             }
