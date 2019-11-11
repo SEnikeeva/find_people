@@ -8,8 +8,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatRepositoryJdbcImpl {
-
+public class ChatRepositoryJdbcImpl implements CrudRepository<Chat> {
+    @Override
     public int save(Chat model) throws SQLException, IOException, ClassNotFoundException {
         Connection connection = new DbConnection().getConnection();
         PreparedStatement st = null;
@@ -37,12 +37,12 @@ public class ChatRepositoryJdbcImpl {
         return null;
     }
 
-    //@Override
+    @Override
     public void delete(Chat model) {
 
     }
 
-    //@Override
+    @Override
     public List<Chat> findAll() throws SQLException, IOException, ClassNotFoundException {
         Connection connection = new DbConnection().getConnection();
         List<Chat> chats = new ArrayList<>();
@@ -58,8 +58,8 @@ public class ChatRepositoryJdbcImpl {
         return chats;
     }
 
-   // @Override
-    public void update() {
+   @Override
+    public void update(Chat chat) {
 
     }
 }

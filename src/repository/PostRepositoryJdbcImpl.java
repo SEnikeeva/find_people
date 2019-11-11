@@ -11,15 +11,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostRepositoryJdbcImpl implements CrudRepository<Post> {
-    @Override
-    public void save(Post model) throws SQLException, IOException, ClassNotFoundException {
+public class PostRepositoryJdbcImpl implements CrudRepository<Post>{
+    //@Override
+    public int save(Post model) throws SQLException, IOException, ClassNotFoundException {
         Connection connection = new DbConnection().getConnection();
         PreparedStatement st = null;
-        int chatId= new ChatRepositoryJdbcImpl().save(new Chat(0));;
+        int chatId= new ChatRepositoryJdbcImpl().save(new Chat(0));
+        int id = 0;
         try {
             st = connection.prepareStatement(
-                    "INSERT INTO post(game, author, requiredplayers, date, chat) VALUES (?, ?, ?, ?, ?)");
+                    "INSERT INTO post(game, author, requiredplayers, date, chat) VALUES (?, ?, ?, ?, ?) returning id");
         } catch (SQLException e) {
             throw new IllegalArgumentException(e);
         }
@@ -30,14 +31,19 @@ public class PostRepositoryJdbcImpl implements CrudRepository<Post> {
             st.setInt(++i, model.getRequiredPlayers());
             st.setDate(++i, model.getDate());
             st.setInt(++i, chatId);
-            st.executeUpdate();
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+            rs.close();
             st.close();
         } catch (SQLException e) {
             throw new IllegalArgumentException(e);
         }
+        return id;
     }
 
-    @Override
+    //@Override
     public Post findByID(int id) throws SQLException, IOException, ClassNotFoundException {
         for (Post post : findAll()) {
             if (post.getId() == id)
@@ -54,12 +60,12 @@ public class PostRepositoryJdbcImpl implements CrudRepository<Post> {
         }
         return posts;
     }
-    @Override
+    //@Override
     public void delete(Post model) {
 
     }
 
-    @Override
+    //@Override
     public List<Post> findAll() throws SQLException, IOException, ClassNotFoundException {
         Connection connection = new DbConnection().getConnection();
         List<Post> posts = new ArrayList<>();
@@ -83,7 +89,11 @@ public class PostRepositoryJdbcImpl implements CrudRepository<Post> {
     }
 
     @Override
-    public void update() {
-
+    public void update(Post post) throws SQLException, IOException, ClassNotFoundException {
+        Connection connection = new DbConnection().getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE post SET requiredplayers = ? WHERE id = ?");
+        statement.setInt(1, post.getRequiredPlayers());
+        statement.setInt(2, post.getId());
+        statement.executeUpdate();
     }
 }

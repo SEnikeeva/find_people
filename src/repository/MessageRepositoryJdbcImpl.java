@@ -13,21 +13,26 @@ public class MessageRepositoryJdbcImpl implements MessageRepository {
 
 
     @Override
-    public void save(Message model) throws SQLException, IOException, ClassNotFoundException {
+    public int save(Message model) throws SQLException, IOException, ClassNotFoundException {
         Connection connection = new DbConnection().getConnection();
+        int id = 0;
         try {
-            PreparedStatement st = connection.prepareStatement("INSERT INTO message(sender , reciever, text, timesent) VALUES (?, ?, ?)");
+            PreparedStatement st = connection.prepareStatement
+                    ("INSERT INTO message(sender, text, timesent, id) VALUES (?, ?, ?, DEFAULT) returning id");
             int i = 1;
             st.setInt(i, model.getSender().getId());
-            st.setInt(++i, model.getReceiver().getId());
             st.setString(++i, model.getText());
             st.setDate(++i, new Date(System.currentTimeMillis()));
-            st.executeUpdate();
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+            rs.close();
             st.close();
         } catch (SQLException e) {
             throw new IllegalArgumentException(e);
         }
-
+        return id;
     }
 
     @Override
@@ -57,22 +62,18 @@ public class MessageRepositoryJdbcImpl implements MessageRepository {
             while (resultSet.next()) {
                 messages.add(new Message(Integer.parseInt(resultSet.getString("id")),
                         new UserRepositoryJdbcImpl().findByID(resultSet.getInt("sender")),
-                        new UserRepositoryJdbcImpl().findByID(resultSet.getInt("receiver")),
                         resultSet.getString("text"),
-                        resultSet.getDate("date")));
+                        resultSet.getDate("timesent")));
             }
         } catch (SQLException e) {
            throw new IllegalArgumentException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-
         return messages;
     }
 
     @Override
-    public void update() {
+    public void update(Message message) {
     }
 }

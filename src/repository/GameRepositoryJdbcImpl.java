@@ -8,11 +8,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameRepositoryJdbcImpl {
-    //@Override
+public class GameRepositoryJdbcImpl implements CrudRepository<Game>{
+    @Override
     public int save(Game model) throws SQLException, IOException, ClassNotFoundException {
         Connection connection = new DbConnection().getConnection();
-        PreparedStatement st = null;
+        PreparedStatement st;
         int id = 0;
         try {
             st = connection.prepareStatement(
@@ -34,7 +34,7 @@ public class GameRepositoryJdbcImpl {
     }
 
 
-    //@Override
+    @Override
     public Game findByID(int id) throws SQLException, IOException, ClassNotFoundException {
         for (Game game : findAll()) {
             if (game.getId() == id)
@@ -43,12 +43,12 @@ public class GameRepositoryJdbcImpl {
         return null;
     }
 
-    //@Override
+    @Override
     public void delete(Game model) {
 
     }
 
-    //@Override
+    @Override
     public List<Game> findAll() throws SQLException, IOException, ClassNotFoundException {
         Connection connection = new DbConnection().getConnection();
         List<Game> games = new ArrayList<>();
@@ -67,8 +67,8 @@ public class GameRepositoryJdbcImpl {
         return games;
     }
 
-    //@Override
-    public void update() {
+    @Override
+    public void update(Game game) {
 
     }
 }

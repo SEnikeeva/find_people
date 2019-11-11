@@ -11,18 +11,11 @@ import java.util.List;
 
 public class UserRepositoryJdbcImpl implements UserRepository {
 
-    private Connection connection;
-
-
-
-   /* public UserRepositoryJdbcImpl(Connection connection) {
-        this.connection = connection;
-    }*/
-
     @Override
-    public void save(User model) throws SQLException, IOException, ClassNotFoundException {
-        connection = new DbConnection().getConnection();
+    public int save(User model) throws SQLException, IOException, ClassNotFoundException {
+        Connection connection = new DbConnection().getConnection();
         PreparedStatement st = null;
+        int id = 0;
         try {
             st = connection.prepareStatement(
                     "INSERT INTO users(username, password, profile_picture) VALUES (?, ?, ?)");
@@ -34,13 +27,16 @@ public class UserRepositoryJdbcImpl implements UserRepository {
             st.setString(i, model.getUsername());
             st.setString(++i, model.getPassword());
             st.setString(++i, model.getProfilePicture());
-            st.executeUpdate();
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+            rs.close();
             st.close();
         } catch (SQLException e) {
             throw new IllegalArgumentException(e);
         }
-
-
+        return id;
     }
 
     @Override
@@ -67,7 +63,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     }
 
     public User validateUser(String username, String password) throws SQLException, IOException, ClassNotFoundException {
-        connection = new DbConnection().getConnection();
+        Connection connection = new DbConnection().getConnection();
         PreparedStatement statement = connection.prepareStatement( "SELECT *  FROM" +
                 " users WHERE username = ? AND  password = ?");
         statement.setString(1, username);
@@ -80,7 +76,6 @@ public class UserRepositoryJdbcImpl implements UserRepository {
                     rs.getString("password"),
                     rs.getString("profile_picture"));
         }
-
         return null;
     }
 
@@ -92,7 +87,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
 
     @Override
     public List<User> findAll() throws SQLException, IOException, ClassNotFoundException {
-        connection = new DbConnection().getConnection();
+        Connection connection = new DbConnection().getConnection();
         List<User> users = new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
@@ -105,13 +100,31 @@ public class UserRepositoryJdbcImpl implements UserRepository {
         } catch (SQLException e) {
             throw new IllegalArgumentException(e);
         }
-
-
         return users;
     }
 
     @Override
-    public void update() {
+    public void update(User user) throws SQLException, IOException, ClassNotFoundException {
+        Connection connection = new DbConnection().getConnection();
+        if (!user.getUsername().equals("")){
+            PreparedStatement statement = connection.prepareStatement("UPDATE users SET username = ? WHERE id = ?");
+            statement.setString(1, user.getUsername());
+            statement.setInt(2, user.getId());
+            statement.executeUpdate();
+        }
 
+        if (!user.getPassword().equals("")){
+            PreparedStatement statement = connection.prepareStatement("UPDATE users SET password = ? WHERE id = ?");
+            statement.setString(1, user.getPassword());
+            statement.setInt(2, user.getId());
+            statement.executeUpdate();
+        }
+
+        if (user.getProfilePicture() != null){
+            PreparedStatement statement = connection.prepareStatement("UPDATE users SET profile_picture = ? WHERE id = ?");
+            statement.setString(1, user.getProfilePicture());
+            statement.setInt(2, user.getId());
+            statement.executeUpdate();
+        }
     }
 }

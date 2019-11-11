@@ -5,9 +5,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface CrudRepository<T> {
-    void save(T model) throws SQLException, IOException, ClassNotFoundException;
+    int save(T model) throws SQLException, IOException, ClassNotFoundException;
     T findByID(int id) throws SQLException, IOException, ClassNotFoundException;
     void delete(T model);
     List<T> findAll() throws SQLException, IOException, ClassNotFoundException;
-    void update();
+    void update(T model) throws SQLException, IOException, ClassNotFoundException;
 }
