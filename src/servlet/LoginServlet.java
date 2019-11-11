@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
         }
         if (usr != null) {
             if (req.getParameter("rememberme") != null) {
-                Cookie cookie = new Cookie("rememberme", usr.getId().toString());
+                Cookie cookie = new Cookie("rememberme", usr.getUsername());
                 cookie.setMaxAge(60 * 60);
                 cookie.setPath("/");
                 resp.addCookie(cookie);
