@@ -18,7 +18,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
         int id = 0;
         try {
             st = connection.prepareStatement(
-                    "INSERT INTO users(username, password, profile_picture) VALUES (?, ?, ?)");
+                    "INSERT INTO users(username, password, profile_picture) VALUES (?, ?, ?) returning id");
         } catch (SQLException e) {
             throw new IllegalArgumentException(e);
         }
