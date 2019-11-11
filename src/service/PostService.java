@@ -8,7 +8,9 @@ import repository.UserRepositoryJdbcImpl;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class PostService {
     public HashSet<User> getGamers(Post post) throws SQLException, IOException, ClassNotFoundException {
@@ -46,5 +48,15 @@ public class PostService {
         Post post1 = new PostRepositoryJdbcImpl().findByID(post);
         post1.setRequiredPlayers(post1.getRequiredPlayers()- 1);
         new PostRepositoryJdbcImpl().update(post1);
+    }
+
+    public List<Post> findLike(String pattern) throws SQLException, IOException, ClassNotFoundException {
+        List<Post> posts = new ArrayList<>();
+        List<Post> postList = new PostRepositoryJdbcImpl().findAll();
+        for (Post post : postList) {
+            if (post.getGame().getName().contains(pattern))
+                posts.add(post);
+        }
+        return posts;
     }
 }
