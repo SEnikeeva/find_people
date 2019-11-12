@@ -59,4 +59,17 @@ public class PostService {
         }
         return posts;
     }
+
+    public List<Post> getTopPosts() throws SQLException, IOException, ClassNotFoundException {
+        Connection connection = new DbConnection().getConnection();
+        List<Post> posts = new ArrayList<>();
+        PreparedStatement statement = connection.prepareStatement( "SELECT id  FROM" +
+                " post ORDER BY requiredplayers DESC");
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            posts.add(new PostRepositoryJdbcImpl().findByID(resultSet.getInt("id")));
+        }
+        return posts;
+    }
+
 }
