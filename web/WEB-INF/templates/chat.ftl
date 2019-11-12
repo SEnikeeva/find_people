@@ -32,26 +32,6 @@
                 </div>
             </div>
         </div>
-        <div id="chat-container" style="">
-            <#list messages as message>
-                <div class="message-row other-message" data-spy="scroll">
-                    <div class="message-content">
-                        <img src="${message.sender.profilePicture!}" width="100" height="100" alt="${message.sender.username!}" />
-                        <div class="message-text" style="width: 100%; height: 100%">${message.text!}</div>
-                        <div class="message-time">${message.timesent!}</div>
-                    </div>
-                </div>
-            </#list>
-        </div>
-        <div id="chat-form">
-            <div class="col-md-3">
-                <input type="hidden" name="chatId" value="${chatId}"/>
-                <input type="text" placeholder="type a message" name="new_message"/>
-            </div>
-            <div class="col-md-3 ml-auto">
-                <button type="submit" class="button" value="save">Отправить</button>
-            </div>
-        </div>
     </form>
 </#macro>
 
