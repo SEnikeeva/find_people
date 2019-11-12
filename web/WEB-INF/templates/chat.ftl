@@ -4,7 +4,7 @@
 
 <#macro content>
     <form method="post" class="mr-auto">
-        <div class="container">
+        <div class="container" style="background: #FFFFFF; height: max-content;">
             <div class="row">
                 <div class="panel panel-default">
                     <div class="panel-heading">Chat</div>
@@ -13,7 +13,7 @@
                         <div class="container">
                             <div class="row message-bubble">
                                 <p class="text-muted">
-                                    <img src="${message.sender.profilePicture!}" width="100" height="100">
+                                    <img src="${message.sender.profilePicture!}" width="75" height="75">
                                     ${message.sender.username!}</p>
                                 <span>${message.text!}</span>
                                 <span>${message.timesent!}</span>
@@ -23,7 +23,7 @@
                         <div class="panel-footer">
                             <div class="input-group">
                                 <input type="hidden" name="chatId" value="${chatId}"/>
-                                <input type="text" placeholder="type a message" name="new_message"/>
+                                <input type="text" placeholder="type a message" name="new_message" autofocus/>
                     <button class="btn btn-default" type="submit" value="save">Send</button>
 
                             </div>
